@@ -6,8 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -41,9 +45,12 @@ public class MainActivity extends AppCompatActivity {
     public SpotifyService spotify;
     public Playlist masterPlaylist;
 
+    private SpotifyAppRemote mSpotifyAppRemote;
+
 
 
     private TextView logViewText;   // a text view for debugging messages
+    private Button playlistButton;
 
 
     @Override
@@ -52,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         logViewText = findViewById(R.id.logView);
+        playlistButton = findViewById(R.id.playPlayList);
+        playlistButton.setVisibility(View.INVISIBLE);
         USER_NAME = "ducttape_87";
-        logViewText.setText("Let's just test this...");
+        logViewText.setText("Fetching Playlist...");
 
         // Go ahead and set things up
         //setups();
@@ -67,6 +76,41 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // We will start writing our code here.
+
+        // Set the connection parameters
+        ConnectionParams connectionParams =
+                new ConnectionParams.Builder(CLIENT_ID)
+                        .setRedirectUri(REDIRECT_URI)
+                        .showAuthView(true)
+                        .build();
+
+        SpotifyAppRemote.connect(this, connectionParams,
+                new Connector.ConnectionListener() {
+
+                    @Override
+                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                        mSpotifyAppRemote = spotifyAppRemote;
+                        Log.d("MainActivity", "Connected! Yay!");
+
+                        // Now you can start interacting with App Remote
+                        //connected();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.e("MainActivity", throwable.getMessage(), throwable);
+
+                        // Something went wrong when attempting to connect! Handle errors here
+                    }
+                });
+    }
+
+
 
     // Initiates getting the Access Token. Requires getAuthenticationRequest(), getRedirectUri(), and onActivityResult()
     public void setToken(){
@@ -156,8 +200,14 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < masterPlaylist.tracks.items.size(); i++){
             result += masterPlaylist.tracks.items.get(i).track.name + "/n";
         }
-
+        playlistButton.setVisibility(View.VISIBLE);
         logViewText.setText(result);
 
+
+    }
+
+    public void onPlayPlaylist(View view) {
+        // Then we will write some more code here.
+        mSpotifyAppRemote.getPlayerApi().play(masterPlaylist.uri);
     }
 }

@@ -28,6 +28,7 @@ dependencies {
 
     implementation project(':spotify-auth')
     implementation project(':spotify-app-remote')
+    implementation "com.google.code.gson:gson:2.8.5"
 
     implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
 }
