@@ -41,16 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
     private String mAccessToken;    // Our ACCESS TOKEN authorizing calls to Spotify
 
-    // Our SpotifyService (from the wrapper) to make web-api calls with
-    public SpotifyService spotify;
-    public Playlist masterPlaylist;
+    public SpotifyService spotify;  // the SpotifyService for making web-api calls with the wraper
+    public Playlist masterPlaylist; // the master playlist to pull tracks from
 
-    private SpotifyAppRemote mSpotifyAppRemote;
+    private SpotifyAppRemote mSpotifyAppRemote; // the app-remote to play music
 
 
 
     private TextView logViewText;   // a text view for debugging messages
-    private Button playlistButton;
+    private Button playlistButton;  // view for the button to play the playlist
 
 
     @Override
@@ -64,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         USER_NAME = "ducttape_87";
         logViewText.setText("Fetching Playlist...");
 
-        // Go ahead and set things up
-        //setups();
 
         //Go ahead and generate an ACCESS TOKEN
         setToken();
@@ -73,10 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
         // So, yeah, this is a stupid place to try and put some flow code here... Should build a little main method or something
 
-
-
     }
 
+    // RIGHT NOW THE ONSTART METHOD JUST SETS UP THE APP-REMOTE
     @Override
     protected void onStart() {
         super.onStart();
@@ -148,14 +144,10 @@ public class MainActivity extends AppCompatActivity {
             onGetPlaylist();
 
 
-
-            //logViewText.setText(masterPlaylist.tracks.items.get(0).track.name);
-
         }
     }
 
-
-
+    // FETCHES THE PLAYLIST
     public void onGetPlaylist(){
 
         logViewText.setText("Nuffin");
@@ -165,14 +157,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Map<String, Object> map1 = new HashMap<String, Object>();
-        map1.put("fields", "uri,tracks");
-
-        //SpotifyApi api = new SpotifyApi();
-        //api.setAccessToken(mAccessToken);
-        //SpotifyService spotify = api.getService();
-
-        spotify.getPlaylist(USER_NAME, "5awS9K0ipGd3xRJR7dM3cy", new SpotifyCallback<Playlist>() {
+        //spotify.getPlaylist(USER_NAME, "5awS9K0ipGd3xRJR7dM3cy", new SpotifyCallback<Playlist>() {
+        spotify.getPlaylist("drakee", "4kuWlTFYcAMBDBxzEoGIiv", new SpotifyCallback<Playlist>() {
             @Override
             public void failure(SpotifyError spotifyError) {
                 logViewText.setText("Could not get playlist");
@@ -188,12 +174,10 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
     }
 
+    // THIS CODE RUNS WHEN YOU HIT THE TOP BUTTON
     public void onTestButton(View view) {
-
-
         String result = "";
         logViewText.setText(String.valueOf(masterPlaylist == null));
 
@@ -204,8 +188,10 @@ public class MainActivity extends AppCompatActivity {
         logViewText.setText(result);
 
 
+
     }
 
+    // THIS CODE RUNS WHEN YOU HIT THE BUTTON TO PLAY THE PLAYLIST
     public void onPlayPlaylist(View view) {
         // Then we will write some more code here.
         mSpotifyAppRemote.getPlayerApi().play(masterPlaylist.uri);
