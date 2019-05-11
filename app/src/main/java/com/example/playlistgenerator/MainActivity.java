@@ -1,7 +1,6 @@
 package com.example.playlistgenerator;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,17 +15,32 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyCallback;
 import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.AudioFeaturesTracks;
+import kaaes.spotify.webapi.android.models.Pager;
 import kaaes.spotify.webapi.android.models.Playlist;
+import kaaes.spotify.webapi.android.models.PlaylistSimple;
+import kaaes.spotify.webapi.android.models.PlaylistTrack;
+import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.UserPrivate;
 import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final int TOTAL_LYRICS = 57650;
 
     // change this to be your own username.
     public String USER_NAME;
@@ -50,29 +64,79 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView logViewText;   // a text view for debugging messages
     private Button playlistButton;  // view for the button to play the playlist
+    private Button bottomButton;    // view for the bottom button
+
+    private List<String> songAndDance;
+    private List<Song> songsDatabase;   // initial list of songs from Master Playlist on Spotify
+
+    private LyricHashMap<String, String> lyricsDatabase;    // database of lyrics built from the big lyrics file
+
+    private Lexicon lexicon; // lexicon used to score lyrcis
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         logViewText = findViewById(R.id.logView);
         playlistButton = findViewById(R.id.playPlayList);
         playlistButton.setVisibility(View.INVISIBLE);
+        bottomButton = findViewById(R.id.bottomButton);
+        bottomButton.setVisibility(View.INVISIBLE);
         USER_NAME = "ducttape_87";
         logViewText.setText("Fetching Playlist...");
 
 
+        //Go ahead anc construct the LEXICON...
+        buildLexicon();
+
         //Go ahead and generate an ACCESS TOKEN
         setToken();
-
-
-        // So, yeah, this is a stupid place to try and put some flow code here... Should build a little main method or something
+        
 
     }
 
-    // RIGHT NOW THE ONSTART METHOD JUST SETS UP THE APP-REMOTE
+    // Loads the big lyrics file and stores it in a LyricHashMap field called "lyrics database"
+    private void readDataBase()  {
+
+        try {
+            InputStream input = getAssets().open("songdata3.txt");
+            Scanner s = new Scanner(input);
+            lyricsDatabase = new LyricHashMap<String,String>();
+
+            // Now fill it out
+            s.nextLine(); //skip first line.
+            int progress = 0;
+            while (s.hasNextLine()){
+                String singleSong = "";
+
+                // read in lines until quotation mark for next song...
+                boolean stop = false;
+                while(s.hasNextLine() && !stop){
+                    String nextLine = s.nextLine();
+                    if (!nextLine.equals("\""))
+                        singleSong += nextLine;
+                    else
+                        stop = true;
+                }
+
+                // split up info
+                String[] infoAndLyrics = singleSong.split("@");
+                String artist = infoAndLyrics[0].replace("\"", "");
+                String title = infoAndLyrics[1];
+                String lyrics = infoAndLyrics[infoAndLyrics.length - 1];
+
+                lyricsDatabase.put(artist+title,lyrics);
+                progress++;
+            }
+
+        } catch (IOException e){
+
+        }
+    }
+
+    // RIGHT NOW THE ONSTART METHOD JUST SETS UP THE APP-REMOTE FOR PLAYING MUSIC
     @Override
     protected void onStart() {
         super.onStart();
@@ -107,8 +171,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    // Initiates getting the Access Token. Requires getAuthenticationRequest(), getRedirectUri(), and onActivityResult()
+    // SET TOKEN
+    // Initiates getting the Access Token AND makes call to get the Master Playlist
+    // Requires getAuthenticationRequest() and onActivityResult()
     public void setToken(){
         final AuthenticationRequest request = getAuthenticationRequest(AuthenticationResponse.Type.TOKEN);
         AuthenticationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
@@ -138,19 +203,28 @@ public class MainActivity extends AppCompatActivity {
             SpotifyApi api = new SpotifyApi();
             api.setAccessToken(mAccessToken);
             this.spotify = api.getService();
-            logViewText.setText("Nuffin");
+
+            // Set USER_NAME to be the currently logged on user
+            this.spotify.getMe(new SpotifyCallback<UserPrivate>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+
+                }
+
+                @Override
+                public void success(UserPrivate userPrivate, Response response) {
+                    USER_NAME = userPrivate.id;
+                }
+            });
 
             // Go ahead and fetch the masterplaylist
-            onGetPlaylist();
-
-
+            onGetPlaylist(); // THIS IS THE CODE THAT IS NORMALLY CALLED
+            //onGetUserSongs();
         }
     }
 
     // FETCHES THE PLAYLIST
     public void onGetPlaylist(){
-
-        logViewText.setText("Nuffin");
         logViewText.setText(mAccessToken);
         if (this.mAccessToken == null) {
             Log.e("MainActivity", "Error: mAccessToken is null! - please sign in first");
@@ -158,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //spotify.getPlaylist(USER_NAME, "5awS9K0ipGd3xRJR7dM3cy", new SpotifyCallback<Playlist>() {
-        spotify.getPlaylist("drakee", "4kuWlTFYcAMBDBxzEoGIiv", new SpotifyCallback<Playlist>() {
+        //spotify.getPlaylist("drakee", "4kuWlTFYcAMBDBxzEoGIiv", new SpotifyCallback<Playlist>() {
+        spotify.getPlaylist("Quintin Sweeney", "6bf29vXaRbKZmi8EXY9drv", new SpotifyCallback<Playlist>() {
+
             @Override
             public void failure(SpotifyError spotifyError) {
                 logViewText.setText("Could not get playlist");
@@ -171,29 +247,109 @@ public class MainActivity extends AppCompatActivity {
                 masterPlaylist = playlist;
                 return;
             }
-
         });
-
     }
 
     // THIS CODE RUNS WHEN YOU HIT THE TOP BUTTON
     public void onTestButton(View view) {
+        songsDatabase = new ArrayList<Song>();
         String result = "";
         logViewText.setText(String.valueOf(masterPlaylist == null));
+        logViewText.setText("");
 
-        for (int i = 0; i < masterPlaylist.tracks.items.size(); i++){
-            result += masterPlaylist.tracks.items.get(i).track.name + "/n";
+        // ADD ALL TRACKS TO A LIST OF SONGS
+        for (int i = 0; i < masterPlaylist.tracks.items.size(); i++) {
+            PlaylistTrack trackToAdd = masterPlaylist.tracks.items.get(i);
+            Song songtoAdd = new Song(trackToAdd.track.artists.get(0).name, trackToAdd.track.name, trackToAdd.track.id);
+            songsDatabase.add(songtoAdd);
+            //build up a string of ids in to use for getting all the audio features.
+            result += masterPlaylist.tracks.items.get(i).track.id + ",";
         }
+        //NOW ADD AUDIO FEATURES FOR ALL SONGS
+        spotify.getTracksAudioFeatures(result, new SpotifyCallback<AudioFeaturesTracks>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+
+                }
+
+                @Override
+                public void success(AudioFeaturesTracks audioFeaturesTracks, Response response) {
+                    for (int i = 0; i < audioFeaturesTracks.audio_features.size(); i++){
+                        songsDatabase.get(i).setFeatures(audioFeaturesTracks.audio_features.get(i));
+                    }
+                    logViewText.setText(songsDatabase.get(0).artist + ", " + songsDatabase.get(0).title + ", " + songsDatabase.get(0).features.danceability);
+                }
+            });
         playlistButton.setVisibility(View.VISIBLE);
-        logViewText.setText(result);
-
-
-
+        bottomButton.setVisibility(View.VISIBLE);
     }
 
     // THIS CODE RUNS WHEN YOU HIT THE BUTTON TO PLAY THE PLAYLIST
     public void onPlayPlaylist(View view) {
-        // Then we will write some more code here.
         mSpotifyAppRemote.getPlayerApi().play(masterPlaylist.uri);
+    }
+
+    // Currently this method iterates over all the tracks in the first 50 playlists of the user
+    public void onGetUserSongs(){
+
+        Map<String, Object> options = new HashMap<>();
+        options.put(SpotifyService.OFFSET, 0);
+        options.put(SpotifyService.LIMIT, 50);
+
+        // Grab a list of the first 50 playlists
+        spotify.getMyPlaylists(options, new SpotifyCallback<Pager<PlaylistSimple>>() {
+            @Override
+            public void failure(SpotifyError spotifyError) {
+
+            }
+
+            @Override
+            public void success(Pager<PlaylistSimple> playlistSimplePager, Response response) {
+                //String result;
+                //iterate over list of playlists
+                for(int i = 0; i < playlistSimplePager.items.size(); i++) {
+                    String pListId = playlistSimplePager.items.get(i).id;
+
+                    // Get the current playlist in the list
+                    spotify.getPlaylist(USER_NAME, pListId, new SpotifyCallback<Playlist>() {
+                        @Override
+                        public void failure(SpotifyError spotifyError) {
+
+                        }
+
+                        @Override
+                        public void success(Playlist playlist, Response response) {
+                            // iterate over the tracks in the playlist
+                            final Playlist pList = playlist;
+                            String result = "";
+                            for (int j = 0; j < pList.tracks.items.size(); j++) {
+                                String tName = pList.tracks.items.get(j).track.name;
+                                result += tName;
+                                logViewText.setText(result);
+                            }
+                        }
+                    });
+
+                }
+
+            }
+        });
+
+    }
+
+    // Loads lexicon file and intializes the "lexicon" field ans a new lexicon.
+    public void buildLexicon(){
+        try {
+            InputStream input = getAssets().open("lexicon_Formatted.txt");
+            lexicon = new Lexicon(input);
+        } catch (IOException e){
+
+        }
+    }
+
+    // calls the readDataBase() method to load in the big lyrics file.
+    public void loadLyrics(View view) {
+            readDataBase();
+            logViewText.setText(lyricsDatabase.get("Gary Numan"+"The Tick Tock Man"));
     }
 }

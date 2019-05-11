@@ -2,5 +2,5 @@
     <string name="app_name">Playlist Generator</string>
     <string name="logViewText">Hello World!</string>
     <string name="playPlaylistText">Play Playlist</string>
-    <string name="testButtonText">List Tracks</string>
+    <string name="testButtonText">Get Tracks</string>
 </resources>
