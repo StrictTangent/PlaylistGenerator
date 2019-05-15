@@ -24,14 +24,17 @@ public class Song{
     private List<String> attributes;
     private int[] scores;
 
+    // Constructs a Song with artist name, song title, and Spotify id
     public Song(String artist, String title, String id){
         this(artist,title,id,null);
     }
 
+    // Add Spotify AudioFeaturesTrack to the Song.
     public void setFeatures(AudioFeaturesTrack features){
         this.features=features;
     }
 
+    // Constructs a Song with artist name, song title, Spotify id, and Spotify AudioFeaturesTrack
     public Song(String artist, String title, String id, AudioFeaturesTrack features){
         this.artist = artist;
         this.title = title;
@@ -39,7 +42,7 @@ public class Song{
         this.features = features;
     }
 
-    // assign a score to this song by running the lyrics through the lexicon
+    // Assign a score to this song by running the lyrics through the lexicon
     public void scoreSong(Lexicon lexicon, LyricHashMap database) {
         String lyrics = (String) database.get(this.artist+this.title);
         if (lyrics != null){
@@ -48,6 +51,7 @@ public class Song{
         }
     }
 
+    // Return the emotion score for a given attribute (0-9)
     public int getAttributeScore(int index){
         return scores[index];
     }

@@ -19,17 +19,17 @@ public class Lexicon {
     private List<String> attributes; // a simple list of attributes.
 
 
-    // Construct Lexicon by passing the File to be read in.
+    // Construct Lexicon by passing an InputStream to be read in.
     public Lexicon(InputStream lexicon) {
 
         this.map = new TreeMap<String, int[]>();
         this.attributes = new ArrayList<String>();
-        readFile(lexicon);
+        readStream(lexicon);
 
     }
 
-    // Reads a .txt file representing a lexicon and builds the map for this lexicon.
-    private void readFile(InputStream lexicon) {
+    // Reads an InputStream representing a lexicon and builds the map for this lexicon.
+    private void readStream(InputStream lexicon) {
 
         Scanner fileScanner = new Scanner(lexicon);
 
