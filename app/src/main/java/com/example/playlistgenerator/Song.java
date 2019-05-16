@@ -1,12 +1,10 @@
-package com.example.playlistgenerator;
-
 // Song
 // Paul Freeman April 25, 2019
 
 // A Class to represent a Song.
 // Must be constructed with Song Title, Lyrics, and a Lexicon to analyze the lyrics.
 
-
+package com.example.playlistgenerator;
 import java.util.*;
 import java.io.*;
 

@@ -1,5 +1,3 @@
-package com.example.playlistgenerator;
-
 // Lexicon
 // Paul Freeman - April 22, 2019
 
@@ -9,28 +7,30 @@ package com.example.playlistgenerator;
 
 // Holds the lexicon as a map of words to sets of values corresponding to attributes.
 
-
-import java.util.*;
-import java.io.*;
+package com.example.playlistgenerator;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Lexicon {
 
     private Map<String, int[]> map;  // a map to store words as keys and arrays of attribute scores as values.
     private List<String> attributes; // a simple list of attributes.
 
-
     // Construct Lexicon by passing an InputStream to be read in.
     public Lexicon(InputStream lexicon) {
-
         this.map = new TreeMap<String, int[]>();
         this.attributes = new ArrayList<String>();
         readStream(lexicon);
-
     }
 
     // Reads an InputStream representing a lexicon and builds the map for this lexicon.
     private void readStream(InputStream lexicon) {
-
         Scanner fileScanner = new Scanner(lexicon);
 
         // Read and set attributes from file (This corresponds to the first line in the lexicon .txt file).
@@ -39,7 +39,6 @@ public class Lexicon {
         String[] tokens = line.split(",");
         for(int i = 0; i < tokens.length; i++)
             this.attributes.add(tokens[i]);
-
 
         // Read and map lexicon from file.
         while (fileScanner.hasNextLine()){
@@ -56,7 +55,7 @@ public class Lexicon {
     }
 
     // Returns an Integer Array of attribute totals for a given File of text.
-    public int[] scoreFile(File file) throws FileNotFoundException{
+    public int[] scoreFile(File file) throws FileNotFoundException {
         return scoreLyrics(new Scanner(file));
     }
 

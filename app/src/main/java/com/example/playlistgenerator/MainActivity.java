@@ -1,3 +1,10 @@
+// MainActivity
+// May 2019 - Paul Freeman
+//
+// This Activity handles user interaction for the Playlist Generator Project
+// Users may select attributes the wish to prioritize for generating a new Spotify Playlist
+// using songs taken from a previously created "Master Playlist".
+
 package com.example.playlistgenerator;
 
 import android.content.Intent;
@@ -52,15 +59,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String REDIRECT_URI = "playlistgenerator://callback";
     public static final int AUTH_TOKEN_REQUEST_CODE = 2019;
 
-
     private String mAccessToken;    // Our ACCESS TOKEN authorizing calls to Spotify
 
     public SpotifyService spotify;  // the SpotifyService for making web-api calls with the wraper
     public Playlist masterPlaylist; // the master playlist to pull tracks from
 
     private SpotifyAppRemote mSpotifyAppRemote; // the app-remote to play music
-
-
 
     private TextView logViewText;   // a text view for debugging messages
     private Button playlistButton;  // view for the button to play the playlist
@@ -71,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     private LyricHashMap<String, String> lyricsDatabase;    // database of lyrics built from the big lyrics file
 
     private Lexicon lexicon; // lexicon used to score lyrcis
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -87,14 +90,11 @@ public class MainActivity extends AppCompatActivity {
         USER_NAME = "ducttape_87";
         logViewText.setText("Fetching Playlist...");
 
-
         //Go ahead anc construct the LEXICON
         buildLexicon();
 
         //Go ahead and generate an ACCESS TOKEN
         setToken();
-
-
     }
 
     // Loads the big lyrics file and stores it in a LyricHashMap field called "lyrics database"
