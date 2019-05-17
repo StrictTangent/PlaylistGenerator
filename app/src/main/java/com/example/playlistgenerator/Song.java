@@ -10,7 +10,7 @@ import java.io.*;
 
 import kaaes.spotify.webapi.android.models.AudioFeaturesTrack;
 
-public class Song{
+public class Song implements AttributeComparable<Song>{
 
     public String title;
     public String artist;
@@ -64,6 +64,10 @@ public class Song{
             result += ", " + attributes.get(i) + ": " + scores[i];
         }
         return result;
+    }
+
+    public int compareTo(Song song2, int attribute){
+        return song2.getAttributeScore(attribute) - this.getAttributeScore(attribute);
     }
 
 }
