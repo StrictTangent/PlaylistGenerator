@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         playlistButton.setVisibility(View.INVISIBLE);
         bottomButton = findViewById(R.id.bottomButton);
         bottomButton.setVisibility(View.INVISIBLE);
-        USER_NAME = "ducttape_87";
+        USER_NAME = "drakeee.";
         logViewText.setText("Fetching Playlist...");
 
         //Go ahead anc construct the LEXICON
