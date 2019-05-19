@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GoodKeywords">
+
+    <TextView
+        android:id="@+id/textViewKeyword"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginLeft="138dp"
+        android:layout_marginTop="177dp"
+        android:layout_marginBottom="71dp"
+        android:text="Choose a feeling "
+        app:layout_constraintBottom_toTopOf="@+id/buttonJoy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonJoy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="50dp"
+        android:text="Joy"
+        app:layout_constraintBottom_toTopOf="@+id/buttonTrust"
+        app:layout_constraintEnd_toEndOf="@+id/textViewKeyword"
+        app:layout_constraintTop_toBottomOf="@+id/textViewKeyword" />
+
+    <Button
+        android:id="@+id/buttonTrust"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginBottom="55dp"
+        android:text="Trust"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSurprise"
+        app:layout_constraintStart_toStartOf="@+id/buttonJoy"
+        app:layout_constraintTop_toBottomOf="@+id/buttonJoy" />
+
+    <Button
+        android:id="@+id/buttonSurprise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="211dp"
+        android:text="Surprise"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/buttonTrust"
+        app:layout_constraintTop_toBottomOf="@+id/buttonTrust" />
+</androidx.constraintlayout.widget.ConstraintLayout>

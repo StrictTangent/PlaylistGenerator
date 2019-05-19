@@ -8,12 +8,14 @@
 package com.example.playlistgenerator;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public String USER_NAME;
 
     // Client ID for the App on the Spotify Developer Dashboard
-    public static final String CLIENT_ID = "544dc767482a47deb564342ed8b710a1";
+    public static final String CLIENT_ID = "28f7f6eba23e4919bc72a4a0f418bc92";
 
     // this is how your redirect URI should look like in the spotify dev dashboard
     public static final String REDIRECT_URI = "playlistgenerator://callback";
@@ -238,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
         //spotify.getPlaylist(USER_NAME, "5awS9K0ipGd3xRJR7dM3cy", new SpotifyCallback<Playlist>() {
         //spotify.getPlaylist("drakee", "4kuWlTFYcAMBDBxzEoGIiv", new SpotifyCallback<Playlist>() {
-        spotify.getPlaylist("Quintin Sweeney", "6bf29vXaRbKZmi8EXY9drv", new SpotifyCallback<Playlist>() {
+        spotify.getPlaylist("drakee.", "1GH1sFJn7U9Nlxz4J853dm", new SpotifyCallback<Playlist>() {
 
             @Override
             public void failure(SpotifyError spotifyError) {
