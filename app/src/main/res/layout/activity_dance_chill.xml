@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="77dp"
-        android:text="I want to..."
+        android:text="@string/IWantTo"
         app:layout_constraintBottom_toTopOf="@+id/buttonDance"
         app:layout_constraintStart_toStartOf="@+id/buttonDance" />
 
@@ -22,7 +22,7 @@
         android:layout_marginTop="283dp"
         android:layout_marginEnd="147dp"
         android:layout_marginRight="147dp"
-        android:text="Dance"
+        android:text="@string/dance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="65dp"
-        android:text="Chill"
+        android:text="@string/chill"
         app:layout_constraintStart_toStartOf="@+id/buttonDance"
         app:layout_constraintTop_toBottomOf="@+id/buttonDance" />
 </androidx.constraintlayout.widget.ConstraintLayout>

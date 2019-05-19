@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BadKeywords">
+
+    <TextView
+        android:id="@+id/textViewChooseBadFeeling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="86dp"
+        android:text="@string/badFeeling"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAnger"
+        app:layout_constraintStart_toStartOf="@+id/buttonAnger" />
+
+    <Button
+        android:id="@+id/buttonAnger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="54dp"
+        android:text="@string/anger"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDisgust"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="onClick"/>
+
+    <Button
+        android:id="@+id/buttonDisgust"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="316dp"
+        android:text="@string/disgust"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/buttonAnger"
+        android:onClick="onClick"/>
+
+    <Button
+        android:id="@+id/buttonFear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:text="@string/fear"
+        app:layout_constraintStart_toStartOf="@+id/buttonDisgust"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDisgust"
+        android:onClick="onClick"/>
+
+    <Button
+        android:id="@+id/buttonSadness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="47dp"
+        android:text="@string/sadness"
+        app:layout_constraintStart_toStartOf="@+id/buttonFear"
+        app:layout_constraintTop_toBottomOf="@+id/buttonFear"
+        android:onClick="onClick"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

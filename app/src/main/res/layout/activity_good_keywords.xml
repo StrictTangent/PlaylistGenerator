@@ -14,7 +14,7 @@
         android:layout_marginLeft="138dp"
         android:layout_marginTop="177dp"
         android:layout_marginBottom="71dp"
-        android:text="Choose a feeling "
+        android:text="@string/chooseFeeling"
         app:layout_constraintBottom_toTopOf="@+id/buttonJoy"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,10 +26,11 @@
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="50dp"
-        android:text="Joy"
+        android:text="@string/joy"
         app:layout_constraintBottom_toTopOf="@+id/buttonTrust"
         app:layout_constraintEnd_toEndOf="@+id/textViewKeyword"
-        app:layout_constraintTop_toBottomOf="@+id/textViewKeyword" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewKeyword"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/buttonTrust"
@@ -38,18 +39,20 @@
         android:layout_marginStart="2dp"
         android:layout_marginLeft="2dp"
         android:layout_marginBottom="55dp"
-        android:text="Trust"
+        android:text="@string/trust"
         app:layout_constraintBottom_toTopOf="@+id/buttonSurprise"
         app:layout_constraintStart_toStartOf="@+id/buttonJoy"
-        app:layout_constraintTop_toBottomOf="@+id/buttonJoy" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonJoy"
+        android:onClick="onClick"/>
 
     <Button
         android:id="@+id/buttonSurprise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="211dp"
-        android:text="Surprise"
+        android:text="@string/surprise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/buttonTrust"
-        app:layout_constraintTop_toBottomOf="@+id/buttonTrust" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonTrust"
+        android:onClick="onClick"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
