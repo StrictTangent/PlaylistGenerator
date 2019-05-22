@@ -16,6 +16,6 @@ public class GoodKeywords extends AppCompatActivity {
 
     public void onClick(View view) {
         Intent onClick = new Intent(this, MyPlaylists.class);
-        startActivity(onClick);      
+        startActivity(onClick);
     }
 }
