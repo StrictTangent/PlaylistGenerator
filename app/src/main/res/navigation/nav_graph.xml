@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu"
+    app:startDestination="@id/menu">
+
+    <activity
+        android:id="@+id/menu"
+        android:name="com.example.playlistgenerator.Menu"
+        android:label="activity_menu"
+        tools:layout="@layout/activity_menu" />
+    <activity
+        android:id="@+id/goodBad"
+        android:name="com.example.playlistgenerator.GoodBad"
+        android:label="activity_good_bad"
+        tools:layout="@layout/activity_good_bad" />
+    <activity
+        android:id="@+id/danceChill"
+        android:name="com.example.playlistgenerator.DanceChill"
+        android:label="activity_dance_chill"
+        tools:layout="@layout/activity_dance_chill" />
+    <activity
+        android:id="@+id/goodKeywords"
+        android:name="com.example.playlistgenerator.GoodKeywords"
+        android:label="activity_good_keywords"
+        tools:layout="@layout/activity_good_keywords" />
+    <action
+        android:id="@+id/selectAction"
+        app:destination="@+id/goodBad"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim" />
+    <action
+        android:id="@+id/selectGoodBad"
+        app:destination="@id/danceChill"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim" />
+    <action
+        android:id="@+id/selectDanceChill"
+        app:destination="@id/goodKeywords"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim" />
+</navigation>
