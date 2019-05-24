@@ -5,6 +5,7 @@
 // Must be constructed with Song Title, Lyrics, and a Lexicon to analyze the lyrics.
 
 package com.example.playlistgenerator;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.io.*;
 
@@ -27,6 +28,18 @@ public class Song implements AttributeComparable<Song>, Serializable{
     public Song(String artist, String title, String id){
         this(artist,title,id,null);
     }
+
+//    public static ArrayList<String> createSongList(List<Song> songsDatabase) {
+//        ArrayList<Song> songs = new ArrayList<Song>();
+//
+//        for (int i = 0; i < songsDatabase.size(); i++) {
+//            songs.add(new Contact("Person " + ++lastContactId, i <= numContacts / 2));
+//        }
+//
+//        return contacts;
+//    }
+
+
 
     // Add Spotify AudioFeaturesTrack to the Song.
     public void setFeatures(AudioFeaturesTrack features){
@@ -61,9 +74,9 @@ public class Song implements AttributeComparable<Song>, Serializable{
         result += ", " + "Artist: " + artist;
         result += ", " + "Album: " + album;
 
-        for (int i = 0; i < scores.length; i ++){
-            result += ", " + attributes.get(i) + ": " + scores[i];
-        }
+//        for (int i = 0; i < scores.length; i ++){
+//            result += ", " + attributes.get(i) + ": " + scores[i];
+//        }
         return result;
     }
 

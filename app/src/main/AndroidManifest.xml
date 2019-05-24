@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ViewMyPlaylists"></activity>
         <activity
             android:name=".MyPlaylists"
             android:label="@string/title_activity_my_playlists"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".BadKeywords" />
         <activity android:name=".DanceChill" />
         <activity android:name=".GoodKeywords" />
