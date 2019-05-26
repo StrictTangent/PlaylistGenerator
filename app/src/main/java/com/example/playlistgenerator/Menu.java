@@ -16,6 +16,7 @@ public class Menu extends AppCompatActivity {
     private TextView welcome;   // a text view for debugging messages
     private Button createPlaylist;  // view for the button to play the playlist
     private Button viewMaster;
+    private Button viewCurrent;
 
 
     @Override
@@ -27,16 +28,39 @@ public class Menu extends AppCompatActivity {
         welcome = findViewById(R.id.textViewWelcome);
         createPlaylist  = findViewById(R.id.buttonCreate);
         viewMaster = findViewById(R.id.buttonViewMaster);
+        viewCurrent = findViewById(R.id.buttonView);
 
+        viewCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("success");
+               if (MainActivity.getCurrentPlaylist() == null) {
+                    startActivity(new Intent(Menu.this, Pop.class));
+                } else {
+                    viewCurrent();
+                }
+            }
+        });
     }
 
-    public void createNewPlaylist(View view) {
-        Intent createNewPlaylist = new Intent(this, GoodBad.class);
-        startActivity(createNewPlaylist);
-    }
+        public void createNewPlaylist(View view) {
+                Intent createNewPlaylist = new Intent(Menu.this, GoodBad.class);
+                startActivity(createNewPlaylist);
+        }
 
-    public void viewMaster(View view) {
-        Intent viewMaster = new Intent(this, ViewMyPlaylists.class);
-        startActivity(viewMaster);
-    }
+        public void viewMaster(View view){
+            Intent viewMaster = new Intent(Menu.this, ViewMyPlaylists.class);
+            startActivity(viewMaster);
+        }
+
+        public void viewCurrent(){
+            Intent viewCurrent = new Intent(Menu.this, Pop.class);
+            startActivity(viewCurrent);
+        }
+
+
 }
+
+
+
+

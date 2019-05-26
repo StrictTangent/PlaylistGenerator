@@ -29,6 +29,7 @@
     <string name="sadness">Sadness</string>
     <string name="title_activity_my_playlists">MyPlaylists</string>
     <string name="large_text">
+
         "Material is the metaphor.\n\n"
 
         "A material metaphor is the unifying theory of a rationalized space and a system of motion."
@@ -118,4 +119,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="nullPlaylist">No playlists found.
+        Please create a playlist first.</string>
 </resources>

@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ViewMyPlaylists"></activity>
+        <activity android:name=".ViewMyPlaylists2"></activity>
+        <activity android:name=".Pop"></activity>
         <activity
             android:name=".MyPlaylists"
             android:label="@string/title_activity_my_playlists"

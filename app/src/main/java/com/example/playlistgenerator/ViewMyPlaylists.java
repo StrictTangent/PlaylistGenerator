@@ -23,7 +23,7 @@ public class ViewMyPlaylists extends AppCompatActivity implements MyRecyclerView
         // data to populate the RecyclerView with
         List<Song> songList = MainActivity.getSongsDatabase();
 
-    
+
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

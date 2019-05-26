@@ -84,13 +84,17 @@ public class MainActivity extends AppCompatActivity {
 
     private String[] userChoices; //array for recording the user's UI choices
 
-    private List<Song> currentPlaylist; // most recent playlist (list of songs)
+    private static List<Song> currentPlaylist; // most recent playlist (list of songs)
     private Playlist currentSpotifyPlaylist; // most recent playlist (spotify playlist)
     private static final int MAX_PLAYLIST_SIZE = 5; // The number of tracks added to a new playlist
     private static final double DANCE_THRESHOLD = 0.5; //songs with danceability of at least this much are considered danceable
 
     public static List<Song> getSongsDatabase() {
         return songsDatabase;
+    }
+
+    public static List<Song> getCurrentPlaylist() {
+        return currentPlaylist;
     }
 
     @Override
@@ -113,6 +117,24 @@ public class MainActivity extends AppCompatActivity {
 
         //Go ahead and generate an ACCESS TOKEN
         setToken();
+        
+
+        findViewById(R.id.buttonView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("success");
+                if (MainActivity.getCurrentPlaylist() != null) {
+                    viewCurrent();
+                } else {
+                    startActivity(new Intent(MainActivity.this, Pop.class));
+                }
+            }
+        });
+    }
+
+    private void viewCurrent() {
+        Intent viewCurrent = new Intent(this, Pop.class);
+        startActivity(viewCurrent);
     }
 
     // Method for the Create New Playlist Button
@@ -300,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
         Intent viewMaster = new Intent(this, ViewMyPlaylists.class);
         startActivity(viewMaster);
     }
+
 
 
     // Loads lexicon file and intializes the "lexicon" field as a new lexicon.
