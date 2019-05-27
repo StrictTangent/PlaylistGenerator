@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,22 +37,27 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         String text = mData.get(position).toString();
         holder.myTextView.setText(text);
+        holder.myArtView.setImageDrawable(mData.get(position).art);
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return 30;
+
+        //return 30;
+        return mData.size();
     }
 
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        ImageView myArtView; // view for album art
+        TextView myTextView; // view for song info
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.tvAnimalName);
+            myArtView = itemView.findViewById(R.id.AlbumArtView);
             itemView.setOnClickListener(this);
         }
 

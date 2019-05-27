@@ -11,6 +11,7 @@ import android.content.Intent;
 //import android.support.v7.app.AppCompatActivity;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
+import com.spotify.protocol.client.CallResult;
+import com.spotify.protocol.types.PlayerState;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -49,29 +52,32 @@ import kaaes.spotify.webapi.android.models.Playlist;
 import kaaes.spotify.webapi.android.models.PlaylistSimple;
 import kaaes.spotify.webapi.android.models.PlaylistTrack;
 import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.TracksPager;
 import kaaes.spotify.webapi.android.models.UserPrivate;
 import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int TOTAL_LYRICS = 57650;
+    public static ArrayList<String> keySet;
 
     // String to hold the Spotify User Name of the person logged in on the device.
-    public String USER_NAME;
+    public static String USER_NAME;
 
     // Client ID for the App on the Spotify Developer Dashboard
-    public static final String CLIENT_ID = "28f7f6eba23e4919bc72a4a0f418bc92";
+    public static final String CLIENT_ID = "544dc767482a47deb564342ed8b710a1";
 
     // this is how your redirect URI should look like in the spotify dev dashboard
     public static final String REDIRECT_URI = "playlistgenerator://callback";
     public static final int AUTH_TOKEN_REQUEST_CODE = 2019;
 
-    private String mAccessToken;    // Our ACCESS TOKEN authorizing calls to Spotify
+    private static String mAccessToken;    // Our ACCESS TOKEN authorizing calls to Spotify
 
-    public SpotifyService spotify;  // the SpotifyService for making web-api calls with the wraper
-    public Playlist masterPlaylist; // the master playlist to pull tracks from
+    public static SpotifyService spotify;  // the SpotifyService for making web-api calls with the wraper
+    public static Playlist masterPlaylist; // the master playlist to pull tracks from
 
-    private SpotifyAppRemote mSpotifyAppRemote; // the app-remote to play music
+    public static SpotifyAppRemote mSpotifyAppRemote; // the app-remote to play music
+
+    StrictMode.ThreadPolicy policy; // for overriding restrictions on performing network operations on main thread
 
     private TextView welcome;   // a text view for debugging messages
     private Button createPlaylist;  // view for the button to play the playlist
@@ -82,10 +88,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Lexicon lexicon; // lexicon used to score lyrcis
 
-    private String[] userChoices; //array for recording the user's UI choices
+    public static String[] userChoices; //array for recording the user's UI choices
+
+    public static List<String> createdPlaylistNames;
 
     private static List<Song> currentPlaylist; // most recent playlist (list of songs)
-    private Playlist currentSpotifyPlaylist; // most recent playlist (spotify playlist)
+    private static Playlist currentSpotifyPlaylist; // most recent playlist (spotify playlist)
     private static final int MAX_PLAYLIST_SIZE = 5; // The number of tracks added to a new playlist
     private static final double DANCE_THRESHOLD = 0.5; //songs with danceability of at least this much are considered danceable
 
@@ -103,10 +111,16 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_main);
         setContentView(R.layout.activity_menu);
 
+        // These two lines allow us to override the restriction on performing network
+        // operations on the main thread. This is required for pulling album art.
+        this.policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         // Initialize views/buttons
         welcome = findViewById(R.id.textViewWelcome);
         createPlaylist  = findViewById(R.id.buttonCreate);
         userChoices = new String[4];
+        createdPlaylistNames = new ArrayList<String>();
 
         // Go ahead and read in the database.
         //readDataBase();
@@ -119,11 +133,15 @@ public class MainActivity extends AppCompatActivity {
         setToken();
         
 
+        // Creates on onclicklistener for the View My Playlist button.
+        // reminds user to create playlist if they haven't yet
+        // otherwise calls ViewCurrent() to view the most recently created playlist
         findViewById(R.id.buttonView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("success");
                 if (MainActivity.getCurrentPlaylist() != null) {
+                    System.out.println("not null");
                     viewCurrent();
                 } else {
                     startActivity(new Intent(MainActivity.this, Pop.class));
@@ -132,8 +150,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Starts an Activity to view the most recently created playlist
     private void viewCurrent() {
-        Intent viewCurrent = new Intent(this, Pop.class);
+        Intent viewCurrent = new Intent(this, ViewMyPlaylists2.class);
         startActivity(viewCurrent);
     }
 
@@ -231,6 +250,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                //DELETE THIS
+                //makeMaster(keySet);
+
                 // Go ahead and fetch the masterplaylist
                 onGetPlaylist(); // THIS IS THE CODE THAT IS NORMALLY CALLED
             }
@@ -261,6 +283,10 @@ public class MainActivity extends AppCompatActivity {
                 // Set the masterPlaylist field.
                 masterPlaylist = playlist;
                 //now get all the songs from the playlist
+
+
+
+
                 getSongsFromMaster();
                 return;
             }
@@ -281,6 +307,9 @@ public class MainActivity extends AppCompatActivity {
             PlaylistTrack trackToAdd = masterPlaylist.tracks.items.get(i);
             // Construct a new Song object using the track artist, name, and id
             Song songtoAdd = new Song(trackToAdd.track.artists.get(0).name, trackToAdd.track.name, trackToAdd.track.id);
+            //add album art
+
+            songtoAdd.setImage(trackToAdd.track.album.images.get(0)); // THIS IS GOING TO BE TRICKY...
             // add it to the List
             songsDatabase.add(songtoAdd);
             //build up a string of ids to use for getting all the audio features.
@@ -318,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Starts an Activity to view the Master Playlist
     public void viewMaster(View view) {
         Intent viewMaster = new Intent(this, ViewMyPlaylists.class);
         startActivity(viewMaster);
@@ -335,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Builds a new EmotionQueue based on user's choices
+    // Builds a new EmotionQueue based on user's choices and dumps result into currentPlaylist field.
     // This should be called once we have information on the user's choices
     public void buildPlaylist(){
 
@@ -361,17 +391,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         currentPlaylist = new ArrayList<Song>();
-        while (!newQueue.isEmpty()){
+        int index = 0;
+        while (!newQueue.isEmpty() && index < MAX_PLAYLIST_SIZE ){
             Log.d("appInfo", newQueue.getMin().toString() + " danceability: " + newQueue.getMin().features.danceability);
             currentPlaylist.add(newQueue.remove());
+            index++;
         }
         //Save the playlist on user's account
         //WE DON'T NECESSARY WANT THIS TO BE CALLED YET
-        SaveSpotifyPlaylist("Generated: " + userChoices[1] + " + " + userChoices[2], currentPlaylist);
+        //SaveSpotifyPlaylist("Generated: " + userChoices[1] + " + " + userChoices[2], currentPlaylist);
     }
 
     // Creates a new empty playlist on user's Spotify account
-    public void SaveSpotifyPlaylist(String playlistName, final List<Song> songList){
+    public static void SaveSpotifyPlaylist(String playlistName, final List<Song> songList){
         Map<String, Object> options = new HashMap<>();
         options.put("name", playlistName);
 
@@ -391,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Add songs from most recently created playlist to the empty playlist on user's spotify account.
-    public void addToPlayList(List<Song> songList, Playlist playlist) {
+    public static void addToPlayList(List<Song> songList, final Playlist playlist) {
 
         if (mAccessToken == null) {
             Log.e("MainActivity", "Error: mAccessToken is null - please sign in first");
@@ -423,6 +455,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void success(Pager<PlaylistTrack> playlistTrackPager, Response response) {
                 Log.d("appInfo","Added the tracks...");
+
+                createdPlaylistNames.add(playlist.name);
+
+                //go ahead and play the playlist
+                //mSpotifyAppRemote.getPlayerApi().play(currentSpotifyPlaylist.uri);
+
             }
         });
     }
@@ -464,6 +502,8 @@ public class MainActivity extends AppCompatActivity {
             Scanner s = new Scanner(input);
             lyricsDatabase = new LyricHashMap<String,String>();
 
+            ArrayList<String> keySet = new ArrayList<String>(); // store all the keys for making a huge playlist
+
             // Now Scan the file line by line and add each song to the LyricHashMap
             // We will use a String made from Artist + Title as the Key.
             s.nextLine(); //skip first line.
@@ -487,14 +527,67 @@ public class MainActivity extends AppCompatActivity {
                 String title = infoAndLyrics[1];
                 String lyrics = infoAndLyrics[infoAndLyrics.length - 1];
 
+                keySet.add(artist+ " " + title);
+
                 lyricsDatabase.put(artist+title,lyrics);
                 progress++;
             }
-
+            this.keySet = keySet;
         } catch (IOException e){
 
         }
     }
 
+    // Tells Spotify to play the Master Playlist
+    public static void playMaster(){
+        playURI(masterPlaylist.uri);
+    }
+    public static void playCurrent() { playURI(currentSpotifyPlaylist.uri);}
+
+    // attempt to make a playlist based on lyric database
+    public static void makeMaster(ArrayList<String> keySet){
+
+        final ArrayList<Song> songs = new ArrayList<Song>();
+
+        for (String key: keySet){
+            spotify.searchTracks(key, new SpotifyCallback<TracksPager>() {
+                @Override
+                public void failure(SpotifyError spotifyError) {
+
+                }
+
+                @Override
+                public void success(TracksPager tracksPager, Response response) {
+                    for (Track track : tracksPager.tracks.items){
+                        songs.add(new Song(track.artists.get(0).name, track.name, track.id));
+                    }
+
+
+                }
+            });
+        }
+        SaveSpotifyPlaylist("Master Playlist", songs );
+    }
+
+
+    // Attempts to play a Track or Playlist based on a URI
+    // Pauses if that Track is already playing
+    public static void playURI(final String URItoPlay){
+        mSpotifyAppRemote.getPlayerApi().getPlayerState().setResultCallback(new CallResult.ResultCallback<PlayerState>() {
+            @Override
+            public void onResult(PlayerState playerState) {
+
+
+
+                if (playerState.isPaused || !playerState.track.uri.equals(URItoPlay)){
+                    MainActivity.mSpotifyAppRemote.getPlayerApi().play(URItoPlay);
+                } else {
+                    MainActivity.mSpotifyAppRemote.getPlayerApi().pause();
+                }
+            }
+        });
+
+
+    }
 
 }
