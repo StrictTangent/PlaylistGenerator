@@ -58,6 +58,7 @@ import java.util.List;
                 button.setText("PLAY");
 
                 MainActivity.SaveSpotifyPlaylist(title, MainActivity.getCurrentPlaylist());
+                Toast.makeText(this, "Playlist \"" + title + "\" saved to Library", Toast.LENGTH_LONG).show();
             } else {
                 paused = !paused;
                 if (!paused) {
