@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public static String USER_NAME;
 
     // Client ID for the App on the Spotify Developer Dashboard
-    public static final String CLIENT_ID = "544dc767482a47deb564342ed8b710a1";
+    public static final String CLIENT_ID = "580870efd26643f18162b8fd48265096";
 
     // this is how your redirect URI should look like in the spotify dev dashboard
     public static final String REDIRECT_URI = "playlistgenerator://callback";
