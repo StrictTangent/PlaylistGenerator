@@ -8,7 +8,7 @@ Clone this repository with Android Studio: https://developer.android.com/studio
 Create a new Client ID on your Spotify Developer Dashboard: https://developer.spotify.com/dashboard/login
 
 On the page for your app on your Spotify Developer Dashboard, go to EDIT SETTINGS.
-Set the Redirect URI to: playlistgenerator://callback \n
+Set the Redirect URI to: playlistgenerator://callback
 
 Add an Android Package with your package name (com.example.playlistgenerator)
 AND SHA1 Fingerprint (can be obtained running the signingReport in Android Studio: Click on Gradle (top right) > app > Tasks > android > signingReport
