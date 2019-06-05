@@ -7,101 +7,112 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class EmotionQueue<E extends AttributeComparable<E>> implements Serializable {
-    private ArrayList<E> heap;
+    public ArrayList<E> myHeap;
     private int attribute;
 
     public EmotionQueue(int attribute) {
-        heap = new ArrayList<E>();
         this.attribute = attribute; // attribute we wish to prioritize
+        myHeap = new ArrayList<E>();
     }
 
-    //removes obejct with greatest priority
+
+    //index right child
+    public int right(int n) {
+        return n*2 + 2;
+    }
+
+    //index left child
+    public int left(int n) {
+        return n*2 + 1;
+    }
+
+    //index parent
+    public int parent(int n) {
+        return (n-1)/2;
+    }
+
+    //gets the minimum value or the root
+    public E getMin() {
+        if (myHeap.size() <= 0)
+            return null;
+        else
+            return myHeap.get(0);
+    }
+
+    //removes root by filling the hole
     public E remove() {
-        if (heap.size() <= 0)
+        if (myHeap.size() <= 0)
             return null;
         else {
-            E min = heap.get(0);
-            heap.set(0, heap.get(heap.size()-1));  // Move last to hole
-            heap.remove(heap.size()-1);
-            percolateDown(heap, 0);
+            E min = myHeap.get(0);
+            myHeap.set(0, myHeap.get(myHeap.size()-1));
+            myHeap.remove(myHeap.size()-1);
+
+            percolateDown(myHeap, 0); //recursively
             return min;
         }
     }
 
-    //insert into array
-    public void insert(E e) {
-        heap.add(e);       //append e
-        int position = heap.size()-1;
+    // Swap two locations i and j
+    public <E> void swap(ArrayList<E> l, int i, int j) {
+        E temp = l.get(i);
 
-        // percolateUp
-        //while (position > 0 && heap.get(position).compareTo(heap.get(parent(position))) < 0) {
-        while (position > 0 && heap.get(position).compareTo(heap.get(parent(position)),attribute) < 0) {
-            swap(heap, position, parent(position));
-            position = parent(position);
+        l.set(i, l.get(j));
+        l.set(j, temp);
+    }
+
+    //insert into the arrayList
+    public void insert(E item) {
+        myHeap.add(item);
+        int position = myHeap.size()-1;
+
+        percolateUp(position);
+
+    }
+
+    //percolates UP to restore heap order property
+    public void percolateUp( int i) {
+        while (i > 0 && myHeap.get(i).compareTo(myHeap.get(parent(i)),
+                attribute) < 0) {
+            swap(myHeap, parent(i), i);
+            i = parent(i);
         }
+
     }
 
-    //checks if pqueue is empty
+    //checks if arraylist is empty
     public boolean isEmpty() {
-        return heap.size() == 0;
+        return myHeap.size() == 0;
     }
 
 
-    //returns root
-    public E getMin() {
-        if (heap.size() <= 0)
-            return null;
-        else
-            return heap.get(0);
-    }
 
     //percolateDown to restore heap order property
-    private <E extends AttributeComparable<E>> void percolateDown(ArrayList<E> a, int i) {
-        int left = leftChild(i);
-        int right = rightChild(i);
-        int smallest;    //smallest value out of left child and right child
+    public  <E extends AttributeComparable<E>> void percolateDown(ArrayList<E> l, int i) {
 
-        //check left child
-        //if (left <= a.size()-1 && a.get(left).compareTo(a.get(i)) < 0){
-        if (left <= a.size()-1 && a.get(left).compareTo(a.get(i),attribute) < 0){
-            smallest = left;
+        int least ;
+        int left = left(i);
+        int right = right(i);
+
+
+        if (left <= l.size()-1 && l.get(left).compareTo(l.get(i),attribute) < 0){ //checks index
+            //within bounds first
+            least = left;
         } else {
-            smallest = i;
+            least = i;
+        }
+        if (right <= l.size()-1 && l.get(right).compareTo(l.get(least),attribute) < 0) {
+            //checks index within bounds first
+
+            least = right;
         }
 
-        //check right child and set right child to smallest if less than left and parent
-        //if (right <= a.size()-1 && a.get(right).compareTo(a.get(smallest)) < 0) {
-        if (right <= a.size()-1 && a.get(right).compareTo(a.get(smallest),attribute) < 0) {
 
-            smallest = right;
-        }
-
-        if (smallest != i) {
-            swap(a, i, smallest);
-            percolateDown(a, smallest);
+        if (least != i) {
+            swap(l, i, least);
+            percolateDown(l, least); //check next level recursively
         }
     }
 
-    // Swap two locations i and j
-    private <E> void swap(ArrayList<E> a, int i, int j) {
-        E t = a.get(i);
-        a.set(i, a.get(j));
-        a.set(j, t);
-    }
 
-    // Return the index of the left child of node i
-    private int leftChild(int i) {
-        return 2*i + 1;
-    }
-
-    // Return the index of the right child of node i
-    private int rightChild(int i) {
-        return 2*i + 2;
-    }
-
-    // Return the index of the parent of node i
-    // (Parent of root will be -1)
-    private int parent(int i) {
-        return (i-1)/2;
-    }
 }
