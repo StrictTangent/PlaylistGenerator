@@ -8,7 +8,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="createPlaylist">Create New Playlist!</string>
-    <string name="welcome">Playlist Generator</string>
+    <string name="welcome">Moodify\nPlaylist Generator</string>
     <string name="viewMyPlaylists">Play My Playlist</string>
     <string name="viewMaster">View Master Playlist</string>
     <string name="IWantTo">Are you in the mood to...</string>
@@ -123,4 +123,5 @@
         Please create a playlist first.</string>
     <string name="playlistname">PlayListName</string>
     <string name="PlayButton">PLAY</string>
+    <string name="buttonOkay">OKAY</string>
 </resources>

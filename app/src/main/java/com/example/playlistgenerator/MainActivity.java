@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public static String USER_NAME;
 
     // Client ID for the App on the Spotify Developer Dashboard
-    public static final String CLIENT_ID = "580870efd26643f18162b8fd48265096";
+    public static final String CLIENT_ID = "544dc767482a47deb564342ed8b710a1";
 
     // this is how your redirect URI should look like in the spotify dev dashboard
     public static final String REDIRECT_URI = "playlistgenerator://callback";
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static List<Song> currentPlaylist; // most recent playlist (list of songs)
     private static Playlist currentSpotifyPlaylist; // most recent playlist (spotify playlist)
-    private static final int MAX_PLAYLIST_SIZE = 5; // The number of tracks added to a new playlist
+    private static final int MAX_PLAYLIST_SIZE = 10; // The number of tracks added to a new playlist
     private static final double DANCE_THRESHOLD = 0.5; //songs with danceability of at least this much are considered danceable
 
     public static List<Song> getSongsDatabase() {
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         // result from when user has made choices...
         if (requestCode == 1987 && resultCode == 1987){
             userChoices = data.getStringArrayExtra("choices");
-            welcome.setText(userChoices[0] + ", " + userChoices[1] + ", " + userChoices[2]);
+            //welcome.setText(userChoices[0] + ", " + userChoices[1] + ", " + userChoices[2]);
             buildPlaylist();
 
 
